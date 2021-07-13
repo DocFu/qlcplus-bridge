@@ -55,7 +55,7 @@ public class AuthInfo implements HomekitAuthInfo {
             logger.info("Added pairing for " + username);
             notifyChange();
         } else {
-            logger.info("Already have a user for " + username);
+            logger.debug("Already have a user for " + username);
         }
     }
 

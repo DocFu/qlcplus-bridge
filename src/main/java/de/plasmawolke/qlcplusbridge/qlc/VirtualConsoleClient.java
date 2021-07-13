@@ -34,6 +34,13 @@ public class VirtualConsoleClient {
 
     }
 
+    public static void main(String[] args) throws Exception {
+
+        VirtualConsoleClient vcc = new VirtualConsoleClient("http://localhost:9999/");
+        List<VirtualConsoleButton> buttons = vcc.collectButtons();
+        logger.info("Collected buttons: " + buttons);
+
+    }
 
     private Optional<String> sendRequestAndGetHtml() throws Exception {
         httpClient.start();
@@ -41,6 +48,7 @@ public class VirtualConsoleClient {
         request = httpClient.newRequest(url).method(HttpMethod.GET)
                 .agent("QLC+ Bridge - Virtual Console Client");
         ContentResponse response = request.send();
+        logger.info("Sent request to '" + url + "'. Got response with status " + response.getStatus() + ".");
         String html = response.getContentAsString();
         httpClient.stop();
         return Optional.ofNullable(html);
@@ -53,11 +61,8 @@ public class VirtualConsoleClient {
 
         try {
             optionalHtml = sendRequestAndGetHtml();
-            if (optionalHtml.isEmpty()) {
-                throw new VirtualConsoleUnavailableException("HTML is empty.");
-            }
         } catch (Exception e) {
-            throw new VirtualConsoleUnavailableException("Could not connect to virtual console on '" + url + "'.", e);
+            throw new VirtualConsoleUnavailableException(url, e);
         }
 
 
@@ -74,7 +79,7 @@ public class VirtualConsoleClient {
 
             if (collect) {
 
-                Integer id = createId(element);
+                Integer id = parseId(element);
                 String name = createName(element);
                 boolean on = isOn(element);
 
@@ -94,21 +99,13 @@ public class VirtualConsoleClient {
     }
 
     /**
-     * Creates an id.
+     * Parses the id.
      *
      * @param element - the virtual console html which represents a button
      * @return the Id
      */
-    private Integer createId(Element element) {
-        String htmlId = element.attr("id");
-        if (StringUtils.isNumeric(htmlId)) {
-            Integer originId = Integer.parseInt(htmlId);
-            if (originId > 1) {
-                return originId;
-            }
-        }
-        logger.warn("Unexpected html button id for element {id='" + htmlId + "'}. Will use hash code instead: " + htmlId.hashCode());
-        return htmlId.hashCode();
+    private Integer parseId(Element element) {
+        return Integer.valueOf(element.attr("id"));
     }
 
     /**
@@ -125,7 +122,7 @@ public class VirtualConsoleClient {
                 logger.info("Label of the button '" + name + "' seems to be long. You might consider to rename it and choose a shorter name.");
             }
         } else {
-            name = "Button " + createId(element);
+            name = "Button " + parseId(element);
         }
         return name;
     }
@@ -152,15 +149,6 @@ public class VirtualConsoleClient {
         String style = element.attr("style");
         boolean bool = style.contains("#00E600") || style.contains("#00e600");
         return bool;
-    }
-
-
-    public static void main(String[] args) throws Exception {
-
-        VirtualConsoleClient vcc = new VirtualConsoleClient("http://localhost:9999/");
-        List<VirtualConsoleButton> buttons = vcc.collectButtons();
-        logger.info("Collected buttons: " + buttons);
-
     }
 
 

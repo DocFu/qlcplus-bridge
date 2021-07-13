@@ -40,7 +40,7 @@ public class HomekitService {
 
         authInfo.onChange(state -> {
             try {
-                logger.info("Updating auth file after state has changed.");
+                logger.debug("Updating auth file after state has changed.");
                 FileOutputStream fileOutputStream = new FileOutputStream(authFile);
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
                 objectOutputStream.writeObject(state);
@@ -53,12 +53,12 @@ public class HomekitService {
 
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.info("Stopping homekit server.");
+            logger.info("Stopping homekit service.");
             homekitServer.stop();
         }));
 
 
-        logger.info("Started successfully with PIN " + pin);
+        logger.info("Started homekit service successfully with PIN " + pin);
 
     }
 
@@ -69,7 +69,7 @@ public class HomekitService {
             FileInputStream fileInputStream = new FileInputStream(authFile);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             try {
-                logger.info("Using state from existing auth file.");
+                logger.debug("Using state from existing auth file.");
                 AuthState authState = (AuthState) objectInputStream.readObject();
                 authInfo = new AuthInfo(authState);
             } finally {

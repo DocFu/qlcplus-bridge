@@ -12,7 +12,9 @@ public class VirtualConsoleButton implements LightbulbAccessory {
 
     private static final Logger logger = LoggerFactory.getLogger(VirtualConsoleButton.class);
 
-    private int id;
+    private int accessoryId;
+
+    private int htmlId;
     private String name;
 
     private String serialNumber = "1234-5678"; // TODO
@@ -22,20 +24,32 @@ public class VirtualConsoleButton implements LightbulbAccessory {
 
     private boolean state;
 
-    public VirtualConsoleButton(int id, String name) {
-        if (id < 2) {
-            throw new IllegalArgumentException("'id' must be greater than 1.");
+    public VirtualConsoleButton(int htmlId, String name) {
+
+        if (htmlId < 0) {
+            throw new IllegalArgumentException("'htmlId' must be greater than 0.");
         }
+        this.htmlId = htmlId;
+
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("'name' may not be empty.");
         }
-        this.id = id;
         this.name = name;
+
+        createAndSetAccessoryId();
+
     }
 
-    public VirtualConsoleButton(int id, String name, boolean initialState) {
-        this(id,name);
+    public VirtualConsoleButton(int htmlId, String name, boolean initialState) {
+        this(htmlId,name);
         state = initialState;
+    }
+
+    private void createAndSetAccessoryId(){
+        accessoryId = (htmlId + name).hashCode();
+        if(accessoryId < 0){
+            accessoryId = accessoryId * -1;
+        }
     }
 
 
@@ -47,7 +61,7 @@ public class VirtualConsoleButton implements LightbulbAccessory {
     @Override
     public CompletableFuture<Void> setLightbulbPowerState(boolean powerState) throws Exception {
         state = powerState;
-        logger.info(this.toString());
+        logger.info("Changed power state for "+ this.toString()+".");
         return CompletableFuture.completedFuture(null);
     }
 
@@ -63,7 +77,7 @@ public class VirtualConsoleButton implements LightbulbAccessory {
 
     @Override
     public int getId() {
-        return id;
+        return accessoryId;
     }
 
     @Override
@@ -73,7 +87,7 @@ public class VirtualConsoleButton implements LightbulbAccessory {
 
     @Override
     public void identify() {
-        logger.info("I'm a VirtualConsoleButton with id '" + id + "' and name '" + name + "'. My current state is " + (state ? "ON" : "OFF") + ".");
+        logger.info("Identifying "+this.toString());
     }
 
     @Override
@@ -100,9 +114,10 @@ public class VirtualConsoleButton implements LightbulbAccessory {
     @Override
     public String toString() {
         return "VirtualConsoleButton{" +
-                "id=" + id +
+                "accessoryId=" + accessoryId +
+                ", htmlId=" + htmlId +
                 ", name='" + name + '\'' +
-                ", state=" + state +
+                ", state=" + (state?"on":"off") +
                 '}';
     }
 }
