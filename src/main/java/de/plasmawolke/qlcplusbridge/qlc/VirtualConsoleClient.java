@@ -27,20 +27,14 @@ public class VirtualConsoleClient {
 
     private List<VirtualConsoleButton> buttons = new ArrayList<>();
 
-    public VirtualConsoleClient(String url) {
-        this.url = url;
+    public VirtualConsoleClient(String host, int port) {
+        this.url = "http://"+host+":"+port+"/";
         httpClient = new HttpClient();
         httpClient.setFollowRedirects(false);
 
     }
 
-    public static void main(String[] args) throws Exception {
 
-        VirtualConsoleClient vcc = new VirtualConsoleClient("http://localhost:9999/");
-        List<VirtualConsoleButton> buttons = vcc.collectButtons();
-        logger.info("Collected buttons: " + buttons);
-
-    }
 
     private Optional<String> sendRequestAndGetHtml() throws Exception {
         httpClient.start();
