@@ -1,6 +1,7 @@
 package de.plasmawolke.qlcplusbridge.hap;
 
 
+import de.plasmawolke.qlcplusbridge.Version;
 import de.plasmawolke.qlcplusbridge.qlc.VirtualConsoleButton;
 import io.github.hapjava.server.impl.HomekitRoot;
 import io.github.hapjava.server.impl.HomekitServer;
@@ -21,8 +22,8 @@ public class HomekitService {
 
     private static final String manufacturer = "https://github.com/DocFu/qlcplus-bridge";
     private static final String model = "QLC+ Bridge";
-    private static final String serialNumber = "0";
-    private static final String firmwareRevision = "0.1";
+    private static final String serialNumber = "1";
+    private static final String firmwareRevision = Version.getVersionAndRevision();
     private static final String hardwareRevision = "-";
 
 

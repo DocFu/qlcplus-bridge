@@ -6,7 +6,13 @@
 
     <groupId>de.plasmwolke</groupId>
     <artifactId>qlcplus-bridge</artifactId>
-    <version>0.1</version>
+    <version>0.8.1</version>
+
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/DocFu/qlcplus-bridge.git</developerConnection>
+        <connection>scm:git:https://github.com/DocFu/qlcplus-bridge.git</connection>
+        <url>https://github.com/DocFu/qlcplus-bridge</url>
+    </scm>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -35,7 +41,6 @@
             <artifactId>jsoup</artifactId>
             <version>1.11.3</version>
         </dependency>
-
 
 
         <!-- Commons / Utils -->
@@ -71,9 +76,25 @@
 
     <build>
 
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>templating-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>generate-version-class</id>
+                            <goals>
+                                <goal>filter-sources</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
 
-            <!-- other Maven plugins ... -->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -106,7 +127,32 @@
                 </executions>
 
             </plugin>
+
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <configuration>
+                    <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
+                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+            </plugin>
+
         </plugins>
+
+
     </build>
 
 </project>

@@ -16,9 +16,10 @@ public class QlcPlusBridge {
 
     private static final Logger logger = LoggerFactory.getLogger(QlcPlusBridge.class);
 
+
     public static void main(String[] args) {
 
-        logger.info("Running QLC+ Bridge...");
+        logger.info("Running QLC+ Bridge " + Version.getVersionAndRevision() + "...");
 
         AppArguments appArguments = new AppArguments();
         JCommander commander = JCommander.newBuilder()
@@ -26,9 +27,9 @@ public class QlcPlusBridge {
                 .build();
         try {
             commander.parse(args);
-        } catch (Exception e){
+        } catch (Exception e) {
             commander.usage();
-            exitWithError("Invalid command line arguments detected: "+e.getMessage());
+            exitWithError("Invalid command line arguments detected: " + e.getMessage());
         }
 
 
