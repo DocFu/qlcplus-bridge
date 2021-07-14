@@ -26,11 +26,10 @@ public class HomekitService {
     private static final String hardwareRevision = "-";
 
 
-
     private int port;
 
 
-    public HomekitService(int port){
+    public HomekitService(int port) {
         this.port = port;
     }
 
@@ -68,8 +67,13 @@ public class HomekitService {
         }));
 
 
-        logger.info("Started homekit service successfully with PIN " + authInfo.getPin());
+        String pp = authInfo.getPin();
 
+        logger.info("Started homekit service successfully on port " + port + ".");
+        logger.info("****************");
+        logger.info("**    PIN:    **");
+        logger.info("** " + pp + " **");
+        logger.info("****************");
     }
 
 
@@ -94,21 +98,19 @@ public class HomekitService {
     }
 
 
-    private String createRandomPin(){
+    private String createRandomPin() {
         Random random = new Random();
 
         String number1 = String.valueOf(random.nextInt(999));
         String number2 = String.valueOf(random.nextInt(99));
         String number3 = String.valueOf(random.nextInt(999));
 
-        number1 = StringUtils.leftPad(number1,3, "0");
-        number2 = StringUtils.leftPad(number2,2, "0");
-        number3 = StringUtils.leftPad(number3,3, "0");
+        number1 = StringUtils.leftPad(number1, 3, "0");
+        number2 = StringUtils.leftPad(number2, 2, "0");
+        number3 = StringUtils.leftPad(number3, 3, "0");
 
-        return number1+"-"+number2+"-"+number3;
+        return number1 + "-" + number2 + "-" + number3;
     }
-
-
 
 
 }
