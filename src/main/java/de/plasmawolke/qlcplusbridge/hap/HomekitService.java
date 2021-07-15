@@ -42,7 +42,7 @@ public class HomekitService {
         HomekitRoot bridge = homekitServer.createBridge(authInfo, model, manufacturer, model, serialNumber, firmwareRevision, hardwareRevision);
 
         for (VirtualConsoleButton vcb : buttons) {
-            logger.info("Registering accessory: " + vcb);
+            logger.info("Adding HomeKit Accessory: " + vcb);
             bridge.addAccessory(vcb);
         }
 

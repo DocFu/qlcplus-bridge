@@ -28,12 +28,11 @@ public class VirtualConsoleClient {
     private List<VirtualConsoleButton> buttons = new ArrayList<>();
 
     public VirtualConsoleClient(String host, int port) {
-        this.url = "http://"+host+":"+port+"/";
+        this.url = "http://" + host + ":" + port + "/";
         httpClient = new HttpClient();
         httpClient.setFollowRedirects(false);
 
     }
-
 
 
     private Optional<String> sendRequestAndGetHtml() throws Exception {
