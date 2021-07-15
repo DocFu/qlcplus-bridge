@@ -15,6 +15,24 @@
    <Universe Name="Universe 3" ID="2"/>
    <Universe Name="Universe 4" ID="3"/>
   </InputOutputMap>
+  <Fixture>
+   <Manufacturer>Stairville</Manufacturer>
+   <Model>LED Bar 240/8 RGB</Model>
+   <Mode>24-channel</Mode>
+   <ID>0</ID>
+   <Name>LED Bar 240/8 RGB</Name>
+   <Universe>0</Universe>
+   <Address>0</Address>
+   <Channels>24</Channels>
+  </Fixture>
+  <Function ID="0" Type="Scene" Name="Neue Szene 0">
+   <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+   <FixtureVal ID="0">0,255,1,255,2,255</FixtureVal>
+  </Function>
+  <Function ID="1" Type="Scene" Name="Neue Szene 1">
+   <Speed FadeIn="0" FadeOut="0" Duration="0"/>
+   <FixtureVal ID="0">3,255,4,255,5,255</FixtureVal>
+  </Function>
  </Engine>
  <VirtualConsole>
   <Frame Caption="">
@@ -34,7 +52,7 @@
      <BackgroundImage>None</BackgroundImage>
      <Font>Default</Font>
     </Appearance>
-    <Function ID="4294967295"/>
+    <Function ID="0"/>
     <Action>Toggle</Action>
     <Intensity Adjust="False">100</Intensity>
    </Button>
@@ -47,7 +65,7 @@
      <BackgroundImage>None</BackgroundImage>
      <Font>Default</Font>
     </Appearance>
-    <Function ID="4294967295"/>
+    <Function ID="1"/>
     <Action>Toggle</Action>
     <Intensity Adjust="False">100</Intensity>
    </Button>
