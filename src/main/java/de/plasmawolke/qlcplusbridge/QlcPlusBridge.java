@@ -7,6 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 public class QlcPlusBridge {
@@ -48,7 +51,13 @@ public class QlcPlusBridge {
             exitWithError("Error on socket: " + e.getMessage());
         }
 
-        HomekitService homekitService = new HomekitService(appArguments.getPort());
+
+
+
+
+
+
+        HomekitService homekitService = new HomekitService(Util.getInetAddress(appArguments.getAddress()), appArguments.getPort());
         try {
             homekitService.runWithAccessories(buttons);
         } catch (Exception e) {

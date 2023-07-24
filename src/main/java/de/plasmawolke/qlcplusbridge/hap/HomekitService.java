@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Random;
 
@@ -28,16 +29,18 @@ public class HomekitService {
 
 
     private int port;
+    private InetAddress address;
 
 
-    public HomekitService(int port) {
+    public HomekitService(InetAddress address, int port) {
+        this.address = address;
         this.port = port;
     }
 
 
     public void runWithAccessories(Collection<VirtualConsoleButton> buttons) throws Exception {
 
-        HomekitServer homekitServer = new HomekitServer(port);
+        HomekitServer homekitServer = new HomekitServer(address, port);
         AuthInfo authInfo = createAuthInfo();
         HomekitRoot bridge = homekitServer.createBridge(authInfo, model, manufacturer, model, serialNumber, firmwareRevision, hardwareRevision);
 

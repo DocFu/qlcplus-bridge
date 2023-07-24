@@ -109,15 +109,32 @@ public class VirtualConsoleClient {
      */
     private String createName(Element element) {
         String name = element.text();
+        String frameName = determineFrameName(element);
         if (StringUtils.isNotBlank(name)) {
-            name = name.trim();
             if (name.length() > 10) {
                 logger.info("Label of the button '" + name + "' seems to be long. You might consider to rename it and choose a shorter name.");
             }
+            name = frameName + " " + name;
         } else {
             name = "Button " + parseId(element);
         }
+        name = name.trim();
         return name;
+    }
+
+    private String determineFrameName(Element element) {
+
+        Element frame = element.parent().parent();
+
+        if(frame.hasClass("vcframe")){
+            Elements vcFrameTexts = frame.getElementsByClass("vcFrameText");
+            if (!vcFrameTexts.isEmpty()) {
+                Element frameText = vcFrameTexts.get(0);
+                return frameText.text().trim();
+            }
+        }
+
+        return "";
     }
 
     /**

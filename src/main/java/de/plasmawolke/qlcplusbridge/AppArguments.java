@@ -2,8 +2,12 @@ package de.plasmawolke.qlcplusbridge;
 
 import com.beust.jcommander.Parameter;
 
+import java.net.InetAddress;
+
 public class AppArguments {
 
+    @Parameter(names = {"-h", "--host"}, description = "The inet address of the bridge, e.g. 192.168.23.138")
+    private String address = null;
 
     @Parameter(names = {"-p", "--port"}, description = "The port of the bridge, e.g. 9123")
     private int port = 9123;
@@ -14,6 +18,9 @@ public class AppArguments {
     @Parameter(names = {"-vcp", "--virtual-console-port"}, description = "The port of the QLC+ Virtual Web Console")
     private int qlcPlusWebPort = 9999;
 
+    public String getAddress() {
+        return address;
+    }
 
     public int getPort() {
         return port;
@@ -35,4 +42,6 @@ public class AppArguments {
                 ", qlcPlusWebPort=" + qlcPlusWebPort +
                 '}';
     }
+
+
 }
