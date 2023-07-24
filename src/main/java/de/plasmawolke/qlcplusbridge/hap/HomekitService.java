@@ -105,15 +105,15 @@ public class HomekitService {
     private String createRandomPin() {
         Random random = new Random();
 
-        String number1 = String.valueOf(random.nextInt(999));
-        String number2 = String.valueOf(random.nextInt(99));
-        String number3 = String.valueOf(random.nextInt(999));
+        String number1 = String.valueOf(random.nextInt(9999));
+        String number2 = String.valueOf(random.nextInt(9999));
 
-        number1 = StringUtils.leftPad(number1, 3, "0");
-        number2 = StringUtils.leftPad(number2, 2, "0");
-        number3 = StringUtils.leftPad(number3, 3, "0");
 
-        return number1 + "-" + number2 + "-" + number3;
+        number1 = StringUtils.leftPad(number1, 4, "0");
+        number2 = StringUtils.leftPad(number2, 4, "0");
+
+
+        return number1 + "-" + number2;
     }
 
 
