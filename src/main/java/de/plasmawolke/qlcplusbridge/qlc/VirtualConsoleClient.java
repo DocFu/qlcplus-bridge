@@ -111,7 +111,6 @@ public class VirtualConsoleClient {
         String name = element.text();
         String frameName = determineFrameName(element);
         if (StringUtils.isNotBlank(name)) {
-            name = name.trim();
             if (name.length() > 10) {
                 logger.info("Label of the button '" + name + "' seems to be long. You might consider to rename it and choose a shorter name.");
             }
@@ -119,6 +118,7 @@ public class VirtualConsoleClient {
         } else {
             name = "Button " + parseId(element);
         }
+        name = name.trim();
         return name;
     }
 
@@ -130,7 +130,7 @@ public class VirtualConsoleClient {
             Elements vcFrameTexts = frame.getElementsByClass("vcFrameText");
             if (!vcFrameTexts.isEmpty()) {
                 Element frameText = vcFrameTexts.get(0);
-                return frameText.text();
+                return frameText.text().trim();
             }
         }
 
