@@ -1,8 +1,8 @@
 package de.plasmawolke.qlcplusbridge.hap;
 
-
 import de.plasmawolke.qlcplusbridge.Version;
 import de.plasmawolke.qlcplusbridge.qlc.VirtualConsoleButton;
+import io.github.hapjava.server.HomekitAuthInfo;
 import io.github.hapjava.server.impl.HomekitRoot;
 import io.github.hapjava.server.impl.HomekitServer;
 import org.apache.commons.lang3.StringUtils;
@@ -20,29 +20,26 @@ public class HomekitService {
 
     private static final File authFile = new File("qlcplus-bridge-auth.bin");
 
-
     private static final String manufacturer = "https://github.com/DocFu/qlcplus-bridge";
     private static final String model = "QLC+ Bridge";
     private static final String serialNumber = "1";
     private static final String firmwareRevision = Version.getVersionAndRevision();
     private static final String hardwareRevision = "-";
 
-
     private int port;
     private InetAddress address;
-
 
     public HomekitService(InetAddress address, int port) {
         this.address = address;
         this.port = port;
     }
 
-
     public void runWithAccessories(Collection<VirtualConsoleButton> buttons) throws Exception {
 
         HomekitServer homekitServer = new HomekitServer(address, port);
-        AuthInfo authInfo = createAuthInfo();
-        HomekitRoot bridge = homekitServer.createBridge(authInfo, model, manufacturer, model, serialNumber, firmwareRevision, hardwareRevision);
+        HomekitAuthInfo authInfo = createAuthInfo();
+        HomekitRoot bridge = homekitServer.createBridge(authInfo, model, 1, manufacturer, model, serialNumber,
+                firmwareRevision, hardwareRevision);
 
         for (VirtualConsoleButton vcb : buttons) {
             logger.info("Adding HomeKit Accessory: " + vcb);
@@ -51,25 +48,24 @@ public class HomekitService {
 
         bridge.start();
 
-        authInfo.onChange(state -> {
-            try {
-                logger.debug("Updating auth file after state has changed.");
-                FileOutputStream fileOutputStream = new FileOutputStream(authFile);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(state);
-                objectOutputStream.flush();
-                objectOutputStream.close();
-            } catch (IOException e) {
-                logger.error("Updating auth file has failed!", e);
-            }
-        });
-
+        // authInfo.onChange(state -> {
+        // try {
+        // logger.debug("Updating auth file after state has changed.");
+        // FileOutputStream fileOutputStream = new FileOutputStream(authFile);
+        // ObjectOutputStream objectOutputStream = new
+        // ObjectOutputStream(fileOutputStream);
+        // objectOutputStream.writeObject(state);
+        // objectOutputStream.flush();
+        // objectOutputStream.close();
+        // } catch (IOException e) {
+        // logger.error("Updating auth file has failed!", e);
+        // }
+        // });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Stopping homekit service.");
             homekitServer.stop();
         }));
-
 
         String pp = authInfo.getPin();
 
@@ -79,7 +75,6 @@ public class HomekitService {
         logger.info("** " + pp + " **");
         logger.info("****************");
     }
-
 
     private AuthInfo createAuthInfo() throws Exception {
         AuthInfo authInfo;
@@ -97,10 +92,8 @@ public class HomekitService {
             authInfo = new AuthInfo(createRandomPin());
         }
 
-
         return authInfo;
     }
-
 
     private String createRandomPin() {
         Random random = new Random();
@@ -115,6 +108,5 @@ public class HomekitService {
 
         return number1 + "-" + number2 + "-" + number3;
     }
-
 
 }
