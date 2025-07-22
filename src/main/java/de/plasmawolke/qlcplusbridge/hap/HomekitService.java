@@ -1,7 +1,8 @@
 package de.plasmawolke.qlcplusbridge.hap;
 
 import de.plasmawolke.qlcplusbridge.Version;
-import de.plasmawolke.qlcplusbridge.qlc.VirtualConsoleButton;
+
+import io.github.hapjava.accessories.HomekitAccessory;
 import io.github.hapjava.server.HomekitAuthInfo;
 import io.github.hapjava.server.impl.HomekitRoot;
 import io.github.hapjava.server.impl.HomekitServer;
@@ -34,33 +35,32 @@ public class HomekitService {
         this.port = port;
     }
 
-    public void runWithAccessories(Collection<VirtualConsoleButton> buttons) throws Exception {
+    public void runWithAccessories(Collection<HomekitAccessory> accessories) throws Exception {
 
         HomekitServer homekitServer = new HomekitServer(address, port);
-        HomekitAuthInfo authInfo = createAuthInfo();
+        AuthInfo authInfo = createAuthInfo();
         HomekitRoot bridge = homekitServer.createBridge(authInfo, model, 1, manufacturer, model, serialNumber,
                 firmwareRevision, hardwareRevision);
 
-        for (VirtualConsoleButton vcb : buttons) {
-            logger.info("Adding HomeKit Accessory: " + vcb);
-            bridge.addAccessory(vcb);
+        for (HomekitAccessory accessory : accessories) {
+            logger.info("Adding HomeKit Accessory: " + accessory);
+            bridge.addAccessory(accessory);
         }
 
         bridge.start();
 
-        // authInfo.onChange(state -> {
-        // try {
-        // logger.debug("Updating auth file after state has changed.");
-        // FileOutputStream fileOutputStream = new FileOutputStream(authFile);
-        // ObjectOutputStream objectOutputStream = new
-        // ObjectOutputStream(fileOutputStream);
-        // objectOutputStream.writeObject(state);
-        // objectOutputStream.flush();
-        // objectOutputStream.close();
-        // } catch (IOException e) {
-        // logger.error("Updating auth file has failed!", e);
-        // }
-        // });
+        authInfo.onChange(state -> {
+            try {
+                logger.debug("Updating auth file after state has changed.");
+                FileOutputStream fileOutputStream = new FileOutputStream(authFile);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(state);
+                objectOutputStream.flush();
+                objectOutputStream.close();
+            } catch (IOException e) {
+                logger.error("Updating auth file has failed!", e);
+            }
+        });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Stopping homekit service.");
