@@ -23,6 +23,7 @@ public class MyLight
     // wird beim einschalten gesetzt
     private int lastDmxBrightness = 50; // nicht zu hell und nicht zu dunkel
 
+    // AX5 DMX Mode 95
     public MyLight(int id, String name, int dmxChannel) {
         this.id = id;
         this.name = name;
