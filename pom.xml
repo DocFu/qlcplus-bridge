@@ -6,7 +6,7 @@
 
     <groupId>de.plasmwolke</groupId>
     <artifactId>qlcplus-bridge</artifactId>
-    <version>0.8.5</version>
+    <version>2025.1</version>
 
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/DocFu/qlcplus-bridge.git</developerConnection>

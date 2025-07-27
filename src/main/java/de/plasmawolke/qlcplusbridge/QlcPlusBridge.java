@@ -1,6 +1,7 @@
 package de.plasmawolke.qlcplusbridge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,30 @@ public class QlcPlusBridge {
         DmxStateStore.getInstance().setSimpleDeskWebSocketClient(simpleDeskWebSocketClient);
 
         List<HomekitAccessory> accessories = new ArrayList<HomekitAccessory>();
-        accessories.add(new MyLight(3, "Baulicht", 1));
+
+        List<MyLight> ax5Group1 = new ArrayList<MyLight>();
+        ax5Group1.add(new MyLight(3, "Baulicht", 1));
+
+        List<MyLight> ax5Group2 = new ArrayList<MyLight>();
+        ax5Group2.add(new MyLight(4, "HL", 8));
+        ax5Group2.add(new MyLight(5, "HR", 15));
+        ax5Group2.add(new MyLight(6, "VR", 22));
+        ax5Group2.add(new MyLight(7, "VL", 29));
+
+        List<MyLight> ax5Group3 = new ArrayList<MyLight>();
+        ax5Group3.add(new MyLight(8, "WTH 1", 36));
+        ax5Group3.add(new MyLight(9, "WTH 2", 43));
+        ax5Group3.add(new MyLight(10, "WTH 3", 50));
+        ax5Group3.add(new MyLight(11, "WTH 4", 57));
+
+        accessories.addAll(ax5Group1);
+        accessories.addAll(ax5Group2);
+        accessories.addAll(ax5Group3);
+
+        // pseudo-accessory for strobe light
+        accessories.add(new MyStrobeLight(101, "Technikblitz", ax5Group1));
+        accessories.add(new MyStrobeLight(102, "Feuerblitz", ax5Group2));
+        accessories.add(new MyStrobeLight(103, "Wegblitz", ax5Group3));
 
         HomekitService homekitService = new HomekitService(Util.getInetAddress(appArguments.getAddress()),
                 appArguments.getPort());
@@ -52,6 +76,8 @@ public class QlcPlusBridge {
         } catch (Exception e) {
             exitWithError("Error while connecting to QLC+ WebSocket: " + e.getMessage());
         }
+
+        homekitService.printPin();
 
     }
 

@@ -1,34 +1,40 @@
 package de.plasmawolke.qlcplusbridge.hap;
 
-import de.plasmawolke.qlcplusbridge.Version;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.util.Collection;
+import java.util.Random;
 
-import io.github.hapjava.accessories.HomekitAccessory;
-import io.github.hapjava.server.HomekitAuthInfo;
-import io.github.hapjava.server.impl.HomekitRoot;
-import io.github.hapjava.server.impl.HomekitServer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.InetAddress;
-import java.util.Collection;
-import java.util.Random;
+import de.plasmawolke.qlcplusbridge.Version;
+import io.github.hapjava.accessories.HomekitAccessory;
+import io.github.hapjava.server.impl.HomekitRoot;
+import io.github.hapjava.server.impl.HomekitServer;
 
 public class HomekitService {
 
     private static final Logger logger = LoggerFactory.getLogger(HomekitService.class);
 
-    private static final File authFile = new File("qlcplus-bridge-auth.bin");
+    private static final File authFile = new File("ax5-bridge-auth.bin");
 
     private static final String manufacturer = "https://github.com/DocFu/qlcplus-bridge";
-    private static final String model = "QLC+ Bridge";
+    private static final String model = "AX5 Bridge";
     private static final String serialNumber = "1";
     private static final String firmwareRevision = Version.getVersionAndRevision();
     private static final String hardwareRevision = "-";
 
     private int port;
     private InetAddress address;
+
+    private String pin;
 
     public HomekitService(InetAddress address, int port) {
         this.address = address;
@@ -67,12 +73,16 @@ public class HomekitService {
             homekitServer.stop();
         }));
 
-        String pp = authInfo.getPin();
+        pin = authInfo.getPin();
 
         logger.info("Started homekit service successfully on port " + port + ".");
+
+    }
+
+    public void printPin() {
         logger.info("****************");
         logger.info("**    PIN:    **");
-        logger.info("** " + pp + " **");
+        logger.info("** " + pin + " **");
         logger.info("****************");
     }
 

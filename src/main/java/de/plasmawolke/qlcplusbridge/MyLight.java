@@ -20,6 +20,9 @@ public class MyLight
     private String name;
     private int dmxChannel;
 
+    // wird beim einschalten gesetzt
+    private int lastDmxBrightness = 50; // nicht zu hell und nicht zu dunkel
+
     public MyLight(int id, String name, int dmxChannel) {
         this.id = id;
         this.name = name;
@@ -38,22 +41,25 @@ public class MyLight
 
     @Override
     public void identify() {
-        logger.info("Identifying " + name);
+        logger.info(
+                "Identifying light: id={}, name='{}', brightnessChannel={}, colorTemperatureChannel={}, hueChannel={}, saturationChannel={}, strobeChannel={}",
+                id, name, getDmxBrightnessChannel(), getDmxColorTemperatureChannel(), getDmxHueChannel(),
+                getDmxSaturationChannel(), getDmxStrobeChannel());
     }
 
     @Override
     public CompletableFuture<String> getSerialNumber() {
-        return CompletableFuture.completedFuture("1234567890");
+        return CompletableFuture.completedFuture("DMX_PROFILE_95");
     }
 
     @Override
     public CompletableFuture<String> getModel() {
-        return CompletableFuture.completedFuture("MyLight");
+        return CompletableFuture.completedFuture("AX5");
     }
 
     @Override
     public CompletableFuture<String> getManufacturer() {
-        return CompletableFuture.completedFuture("MyManufacturer");
+        return CompletableFuture.completedFuture("Astera");
     }
 
     @Override
@@ -74,8 +80,12 @@ public class MyLight
 
     @Override
     public CompletableFuture<Void> setBrightness(Integer value) throws Exception {
-        logger.info("Setting brightness to " + value);
+        logger.info("Setting brightness for '{}' to {} (DMX value: {}, channel: {})", name, value,
+                (short) (value * 255.0 / 100), getDmxBrightnessChannel());
         DmxStateStore.getInstance().put(getDmxBrightnessChannel(), (short) (value * 255.0 / 100));
+        if (value > 0) {
+            lastDmxBrightness = (short) (value * 255.0 / 100);
+        }
         return CompletableFuture.completedFuture(null);
     }
 
@@ -101,8 +111,10 @@ public class MyLight
 
     @Override
     public CompletableFuture<Void> setLightbulbPowerState(boolean powerState) throws Exception {
-        logger.info("Setting lightbulb power state to " + powerState);
-        DmxStateStore.getInstance().put(getDmxBrightnessChannel(), powerState ? (short) 255 : (short) 0);
+        short dmxValue = powerState ? (short) lastDmxBrightness : (short) 0;
+        logger.info("Setting lightbulb power state for '{}' to {} (DMX value: {}, channel: {})", name, powerState,
+                dmxValue, getDmxBrightnessChannel());
+        DmxStateStore.getInstance().put(getDmxBrightnessChannel(), dmxValue);
         return CompletableFuture.completedFuture(null);
     }
 
@@ -126,15 +138,16 @@ public class MyLight
         if (dmxColorTemperature == null) {
             return CompletableFuture.completedFuture(140);
         }
-        int hapColorTemperature = (int) (50 + (dmxColorTemperature / 255.0) * (400 - 50));
+        int hapColorTemperature = (int) (400 - (dmxColorTemperature / 255.0) * (400 - 50));
         logger.info("Color temperature: {} -> {}", dmxColorTemperature, hapColorTemperature);
         return CompletableFuture.completedFuture(hapColorTemperature);
     }
 
     @Override
     public CompletableFuture<Void> setColorTemperature(Integer value) throws Exception {
-        logger.info("Setting color temperature to " + value);
-        short dmxValue = (short) ((value - 50) * 255.0 / (400 - 50));
+        short dmxValue = (short) (((400 - value) * 255.0) / (400 - 50));
+        logger.info("Setting color temperature for '{}' to {} (DMX value: {}, channel: {})", name, value, dmxValue,
+                getDmxColorTemperatureChannel());
         DmxStateStore.getInstance().put(getDmxColorTemperatureChannel(), dmxValue);
         return CompletableFuture.completedFuture(null);
     }
@@ -164,8 +177,10 @@ public class MyLight
 
     @Override
     public CompletableFuture<Void> setHue(Double value) throws Exception {
-        logger.info("Setting hue to " + value);
-        DmxStateStore.getInstance().put(getDmxHueChannel(), (short) (value * 255.0 / 360.0));
+        short dmxValue = (short) (value * 255.0 / 360.0);
+        logger.info("Setting hue for '{}' to {} (DMX value: {}, channel: {})", name, value, dmxValue,
+                getDmxHueChannel());
+        DmxStateStore.getInstance().put(getDmxHueChannel(), dmxValue);
         return CompletableFuture.completedFuture(null);
     }
 
@@ -190,8 +205,10 @@ public class MyLight
 
     @Override
     public CompletableFuture<Void> setSaturation(Double value) throws Exception {
-        logger.info("Setting saturation to " + value);
-        DmxStateStore.getInstance().put(getDmxSaturationChannel(), (short) (value * 255.0 / 100.0));
+        short dmxValue = (short) (value * 255.0 / 100.0);
+        logger.info("Setting saturation for '{}' to {} (DMX value: {}, channel: {})", name, value, dmxValue,
+                getDmxSaturationChannel());
+        DmxStateStore.getInstance().put(getDmxSaturationChannel(), dmxValue);
         return CompletableFuture.completedFuture(null);
     }
 
@@ -211,6 +228,10 @@ public class MyLight
         return dmxChannel;
     }
 
+    public int getDmxColorTemperatureChannel() {
+        return dmxChannel + 1;
+    }
+
     public int getDmxHueChannel() {
         return dmxChannel + 3;
     }
@@ -219,8 +240,8 @@ public class MyLight
         return dmxChannel + 4;
     }
 
-    public int getDmxColorTemperatureChannel() {
-        return dmxChannel + 1;
+    public int getDmxStrobeChannel() {
+        return dmxChannel + 5;
     }
 
 }

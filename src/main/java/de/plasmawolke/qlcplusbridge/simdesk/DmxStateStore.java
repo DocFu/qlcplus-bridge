@@ -26,7 +26,7 @@ public class DmxStateStore {
     }
 
     public void put(int channelId, short value) {
-        logger.info("Put value {} for channel {}", value, channelId);
+        logger.debug("Put value {} for channel {}", value, channelId);
 
         if (simpleDeskWebSocketClient != null) {
             simpleDeskWebSocketClient.sendDmxValue(channelId, value);

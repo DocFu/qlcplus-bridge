@@ -71,8 +71,6 @@ public class SimpleDeskWebSocketClient implements VetoableChangeListener {
             int kanal = Integer.parseInt(kanalStr);
             short wert = Short.parseShort(wertStr);
 
-            System.out.println("Kanal: " + kanal + ", Wert: " + wert);
-
             // Prüfe, ob das nächste Feld existiert und mit "0.#" beginnt
             if (i + 2 < parts.length && parts[i + 2].startsWith("0.#")) {
                 i += 3; // Optionales Feld überspringen
@@ -128,7 +126,7 @@ public class SimpleDeskWebSocketClient implements VetoableChangeListener {
 
         logger.debug("Sending QLC+ WebSocket Hello message");
 
-        String message = "QLC+API|getChannelsValues|1|1|43";
+        String message = "QLC+API|getChannelsValues|1|1|64";
 
         if (wsSession == null) {
             logger.warn("WebSocket session is not established. Cannot send hello message.");
